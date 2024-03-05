@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:subhash_app/view/home_page.dart';
 
+import '../repo/auth_helper.dart';
 import '../widget/custom_button.dart';
 
 class LoginPage extends StatelessWidget {
@@ -38,8 +39,24 @@ class LoginPage extends StatelessWidget {
               isPassword: true,
               textEditingController: passwordEditingController),
           fitBox(),
-          CustomButton(label: 'log In', onTap: (){Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));},)
+          CustomButton(
+            label: 'log In',
+            onTap: () {
+             // Navigator.push(
+               //   context, MaterialPageRoute(builder: (context) => HomePage()));
+               AuthenticationHelper()
+   .signIn(email: emailEditingController.text, password: passwordEditingController.text)
+      .then((result) {
+         if (result == null) {
+           Navigator.pushReplacement(context,
+             MaterialPageRoute(builder: (context) => HomePage()));
+          } else {
+             var snackBar = SnackBar(content: Text(result));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+           }
+      });
+            },
+          )
         ]),
       )
     ]));
@@ -49,7 +66,6 @@ class LoginPage extends StatelessWidget {
         height: 10,
       );
 }
-
 
 TextFormField inputField(
     {required String hintText,
